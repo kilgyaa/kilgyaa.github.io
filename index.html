@@ -34,22 +34,17 @@
                     <li><a href="#" class="nav-link" data-page="resources">Resources</a></li>
                     <li><a href="#" class="nav-link" data-page="acknowledgements">Acknowledgements</a></li>
                 </ul>
+                <div class="ortho-controls" style="margin-top: 10px;">
+                    <label for="orthography-select">Orthography:</label>
+                    <select id="orthography-select">
+                        <option value="lachler" selected>Lachler</option>
+                        <option value="classic">Classic</option>
+                    </select>
+                </div>
             </nav>
         </div>
     </header>
 
-    <div class="orthography-switcher row">
-        <div class="large-12 columns">
-            <div class="ortho-controls">
-                <label for="orthography-select">Orthography:</label>
-                <select id="orthography-select">
-                    <option value="lachler" selected>Lachler</option>
-                    <option value="classic">Classic</option>
-                    <option value="enrico">Enrico</option>
-                </select>
-            </div>
-        </div>
-    </div>
 
     <div class="row collapse">
         <div class="large-12 columns">
@@ -288,22 +283,26 @@
             }
         }
 
-        function displayResults(entries) {
+        function displayResults(entries, orthography = 'lachler') {
             const resultsList = $('.results-list');
             resultsList.empty();
             
             entries.forEach((entry, index) => {
-                // Calculate IPA dynamically if not already present
-                const pronunciation = entry.pronunciation || lachlerToIPA(entry.word);
+                // Get the word in the current orthography
+                const word = entry[orthography] || entry.lachler;
+                
+                // Calculate IPA from Lachler form
+                const pronunciation = lachlerToIPA(entry.lachler);
                 
                 // Build examples HTML
                 let examplesHtml = '';
                 if (entry.examples && entry.examples.length > 0) {
                     examplesHtml = '<div class="detail-section"><h6>Examples</h6><div class="examples">';
                     entry.examples.forEach(example => {
+                        const exampleSentence = example[orthography] || example.lachler;
                         examplesHtml += `
                             <div class="example-item">
-                                <div class="example-sentence">${example.sentence}</div>
+                                <div class="example-sentence">${exampleSentence}</div>
                                 <div class="example-translation">"${example.translation}"</div>
                             </div>
                         `;
@@ -313,9 +312,12 @@
                 
                 // Build inflections HTML
                 let inflectionsHtml = '';
-                if (entry.inflections && entry.inflections.length > 0) {
+                const inflections = (entry.inflections && entry.inflections[orthography]) ? 
+                    entry.inflections[orthography] : 
+                    (entry.inflections && entry.inflections.lachler) ? entry.inflections.lachler : [];
+                if (inflections.length > 0) {
                     inflectionsHtml = '<div class="detail-section"><h6>Inflections</h6><div class="inflections">';
-                    entry.inflections.forEach(inflection => {
+                    inflections.forEach(inflection => {
                         inflectionsHtml += `<span class="inflection-item">${inflection}</span>`;
                     });
                     inflectionsHtml += '</div></div>';
@@ -336,7 +338,10 @@
                 // Get classifier or inflection class for compact display
                 let compactGrammar = '';
                 if (entry.type === 'noun' && entry.classifier) {
-                    compactGrammar = `classifier: ${entry.classifier}`;
+                    const classifier = typeof entry.classifier === 'object' ? 
+                        (entry.classifier[orthography] || entry.classifier.lachler || entry.classifier) : 
+                        entry.classifier;
+                    compactGrammar = `classifier: ${classifier}`;
                 } else if (entry.type === 'verb' && entry.inflectionClass) {
                     compactGrammar = entry.inflectionClass;
                 }
@@ -347,7 +352,7 @@
                             <div class="entry-main">
                                 <div class="entry-left">
                                     <div class="entry-word">
-                                        <strong>${entry.word}</strong>
+                                        <strong>${word}</strong>
                                         <span class="entry-type">(${entry.type})</span>
                                         ${compactGrammar ? `<span class="entry-grammar">${compactGrammar}</span>` : ''}
                                     </div>
@@ -391,16 +396,17 @@
                 .replace(/[^a-z0-9]/g, '');
         }
 
-        function filterEntries(query) {
+        function filterEntries(query, orthography = 'lachler') {
             if (!query) {
                 return placeholderEntries.slice(0, 6); // Show first 6 entries by default
             }
             
             const normalizedQuery = normalizeText(query);
-            return placeholderEntries.filter(entry => 
-                normalizeText(entry.word).includes(normalizedQuery) ||
-                normalizeText(entry.definition).includes(normalizedQuery)
-            ).slice(0, 8); // Show up to 8 matching entries
+            return placeholderEntries.filter(entry => {
+                const word = entry[orthography] || entry.lachler;
+                return normalizeText(word).includes(normalizedQuery) ||
+                       normalizeText(entry.definition).includes(normalizedQuery);
+            }).slice(0, 8); // Show up to 8 matching entries
         }
 
         $(document).ready(function () {
@@ -412,12 +418,13 @@
             // Auto-display functionality
             $('.search .keyword').on('input', function() {
                 const query = $(this).val().trim();
+                const orthography = $('#orthography-select').val();
                 
                 // Mark that user has typed something
                 if (query.length > 0) {
                     $(this).data('has-typed', true);
-                    const filteredEntries = filterEntries(query);
-                    displayResults(filteredEntries);
+                    const filteredEntries = filterEntries(query, orthography);
+                    displayResults(filteredEntries, orthography);
                 } else {
                     $('#search-results').hide();
                     $('#what_is_this').show();
@@ -429,7 +436,8 @@
                 // Only show entries if user has previously typed something
                 // This prevents showing entries immediately on page load
                 if ($(this).val().trim() === '' && $(this).data('has-typed')) {
-                    displayResults(filterEntries(''));
+                    const orthography = $('#orthography-select').val();
+                    displayResults(filterEntries('', orthography), orthography);
                 }
             });
             
@@ -517,43 +525,27 @@
                 // Hide search form and results for non-dictionary pages
                 if (targetPage === 'dictionary') {
                     $('.search').show();
-                    $('.orthography-switcher').show();
                 } else {
                     $('.search').hide();
-                    $('.orthography-switcher').hide();
                     $('#search-results').hide();
                     $('#what_is_this').show();
                 }
             });
 
             // Orthography switching
-            let currentOrthography = 'lachler';
-            
             $('#orthography-select').change(function() {
                 const newOrthography = $(this).val();
                 
-                if (newOrthography !== currentOrthography) {
-                    // Convert search input
-                    const currentInput = $('.search .keyword').val();
-                    if (currentInput) {
-                        const convertedInput = convertOrthography(currentInput, currentOrthography, newOrthography);
-                        $('.search .keyword').val(convertedInput);
+                // Re-run search if results are visible
+                if ($('#search-results').is(':visible')) {
+                    const query = $('.search .keyword').val().trim();
+                    if (query.length > 0) {
+                        const filteredEntries = filterEntries(query, newOrthography);
+                        displayResults(filteredEntries, newOrthography);
+                    } else {
+                        const filteredEntries = filterEntries('', newOrthography);
+                        displayResults(filteredEntries, newOrthography);
                     }
-                    
-                    // Re-run search with converted query if results are visible
-                    if ($('#search-results').is(':visible')) {
-                        const query = $('.search .keyword').val().trim();
-                        if (query.length > 0) {
-                            const convertedEntries = convertDictionaryEntries(placeholderEntries, newOrthography);
-                            const filteredEntries = convertedEntries.filter(entry => 
-                                normalizeText(entry.word).includes(normalizeText(query)) ||
-                                normalizeText(entry.definition).includes(normalizeText(query))
-                            ).slice(0, 8);
-                            displayResults(filteredEntries);
-                        }
-                    }
-                    
-                    currentOrthography = newOrthography;
                 }
             });
         })

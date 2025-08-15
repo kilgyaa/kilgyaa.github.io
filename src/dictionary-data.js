@@ -2,105 +2,123 @@
 // IPA pronunciation will be calculated dynamically from the Lachler orthography
 const placeholderEntries = [
     {
-        word: "íijang",
+        lachler: "íijang",
         definition: "to be",
         type: "verb",
         grammar: "intransitive verb",
         inflectionClass: "-s",
         examples: [
             {
-                sentence: "Hláa uu íijang.",
+                lachler: "Hláa uu íijang.",
                 translation: "It's me."
             },
             {
-                sentence: "Hal íijang uu?",
+                lachler: "Hal íijang uu?",
                 translation: "Where are you?"
             }
         ],
-        inflections: ["is", "íijang", "íijan", "ijáan"],
+        inflections: {
+            lachler: ["is", "íijang", "íijan", "ijáan"]
+        },
         notes: "This is the basic copula verb in Haida, equivalent to 'to be' in English. Cf. g̱íidang."
     },
     {
-        word: "g̱ándl",
+        lachler: "g̱ándl",
+        classic: "g̱ántl",
         definition: "water",
         type: "noun",
         grammar: "common noun",
         examples: [
             {
-                sentence: "G̱ándlaay k'íinaang.",
+                lachler: "G̱ándlaay k'íinaang.",
                 translation: "The water is hot."
             }
         ],
-        inflections: ["g̱ándlaay (the water)"],
+        inflections: {
+            lachler: ["g̱ándlaay (the water)"]
+        },
         notes: ""
     },
     {
-        word: "hlg̱ánggula",
+        lachler: "hlg̱ánggula",
         definition: "to work",
         type: "verb",
         grammar: "intransitive verb",
         inflectionClass: "weak-a",
         examples: [
             {
-                sentence: "Dáng hlg̱ánggulaang.",
+                lachler: "Dáng hlg̱ánggulaang.",
                 translation: "You work."
             }
         ],
-        inflections: ["hlg̱ánggulgan", "hlg̱ánggulsaang"],
+        inflections: {
+            lachler: ["hlg̱ánggulgan", "hlg̱ánggulsaang"]
+        },
         notes: ""
     },
     {
-        word: "na",
+        lachler: "na",
         definition: "house",
         type: "noun",
         grammar: "common noun",
         classifier: "tíi",
         examples: [
             {
-                sentence: "Náay uu í'waangang.",
+                lachler: "Náay uu í'waangang.",
                 translation: "The house is big."
             }
         ],
-        inflections: ["náay (the house)"],
+        inflections: {
+            lachler: ["náay (the house)"],
+        },
         notes: ""
     },
     {
-        word: "chíin",
+        lachler: "chíin",
         definition: "fish, salmon",
         type: "noun",
         grammar: "common noun",
         classifier: "sáa",
         examples: [
             {
-                sentence: "Chíin uu táaw 'láa íijang.",
+                lachler: "Chíin uu táaw 'láa íijang.",
                 translation: "Fish is a good food."
             }
         ],
-        inflections: ["chíinaay (the fish)"],
+        inflections: {
+            lachler: ["chíinaay (the fish)"]
+        },
         notes: "Refers either to salmon or fish in general."
     },
     {
-        word: "X̱aad Kíl",
+        lachler: "X̱aad Kíl",
+        classic: "X̱aat Kíl",
         definition: "Haida language",
         type: "noun",
         grammar: "compound noun",
         examples: [
             {
-                sentence: "Dámaan X̱aad Kíl hal gúusuugang.",
+                lachler: "Dámaan X̱aad Kíl hal gúusuugang.",
+                classic: "Dámaan Xaat Kíl hal gúusuugang.",
                 translation: "S/he speaks Haida fluently."
             }
         ],
-        inflections: [],
+        inflections: {
+            lachler: [],
+            classic: []
+        },
         notes: "Related words: X̱aad, Kíl."
     },
     {
-        word: "naĝats'íi",
+        lachler: "naĝats'íi",
         definition: "fox",
         type: "noun",
         grammar: "common noun",
         classifier: "sáa",
         examples: [],
-        inflections: [],
+        inflections: {
+            lachler: [],
+        },
         notes: ""
     }
 ];
