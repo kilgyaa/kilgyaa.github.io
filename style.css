@@ -1443,6 +1443,94 @@ h1.logo {
     margin-left: -6px
 }
 
+/* Navigation Styles */
+.main-nav {
+    margin-top: 20px;
+}
+
+.nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.nav-menu li {
+    margin: 0;
+}
+
+.nav-link {
+    color: #4a80b5;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.nav-link:hover {
+    background: #f0f8ff;
+    color: #333;
+    text-decoration: none;
+}
+
+.nav-link.active {
+    background: #4a80b5;
+    color: white;
+}
+
+/* Orthography Switcher */
+.orthography-switcher {
+    padding: 10px 0;
+    background: #f8f8f8;
+    border-bottom: 1px solid #eee;
+}
+
+.ortho-controls {
+    text-align: right;
+}
+
+.ortho-controls label {
+    margin-right: 8px;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.ortho-controls select {
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: white;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+/* Page content styles */
+.coming-soon {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.resource-links {
+    margin-top: 20px;
+}
+
+.resource-links li {
+    margin-bottom: 10px;
+}
+
+.acknowledgement-section h3 {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    color: #4a80b5;
+}
+
 @media only screen and (max-width:40em) {
     h1.logo a {
         width: 88px;
@@ -1707,19 +1795,36 @@ body {
     border-bottom: none;
 }
 
+.clickable-entry {
+    cursor: pointer;
+}
+
+.clickable-entry:hover {
+    background-color: #f5f5f5 !important;
+}
+
+.clickable-entry.expanded {
+    background-color: #f0f8ff;
+}
+
 .entry-header {
+    width: 100%;
+}
+
+.entry-main {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 15px;
 }
 
-.entry-basic {
+.entry-left {
     flex: 1;
 }
 
-.entry-actions {
+.entry-right {
     flex-shrink: 0;
+    text-align: right;
 }
 
 .entry-word {
@@ -1741,11 +1846,24 @@ body {
     font-style: italic;
 }
 
+.entry-grammar {
+    font-size: 0.75rem;
+    color: #888;
+    font-style: italic;
+    margin-left: 8px;
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
 .entry-pronunciation {
     font-size: 0.9rem;
     color: #888;
-    margin-bottom: 8px;
     font-family: monospace;
+    background: #f8f8f8;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
 }
 
 .entry-definition {
@@ -1754,39 +1872,6 @@ body {
     line-height: 1.4;
 }
 
-.expand-btn {
-    background: #f8f8f8;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 12px 16px;
-    cursor: pointer;
-    color: #666;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 60px;
-    width: 50px;
-    font-size: 18px;
-}
-
-.expand-btn:hover {
-    background: #e8e8e8;
-    border-color: #bbb;
-    color: #333;
-    transform: scale(1.05);
-}
-
-.expand-btn.expanded {
-    background: #e8f4fd;
-    border-color: #4a80b5;
-    color: #4a80b5;
-}
-
-.expand-btn svg {
-    width: 36px;
-    height: 36px;
-}
 
 .entry-details {
     margin-top: 15px;
@@ -1907,22 +1992,23 @@ body {
         color: #ddd;
     }
 
-    [data-color-theme*="a"] .expand-btn {
+    [data-color-theme*="a"] .clickable-entry:hover {
+        background-color: #4a4a4a !important;
+    }
+
+    [data-color-theme*="a"] .clickable-entry.expanded {
+        background-color: #2d4a66;
+    }
+
+    [data-color-theme*="a"] .entry-grammar {
         background: #555;
-        border-color: #666;
         color: #bbb;
     }
 
-    [data-color-theme*="a"] .expand-btn:hover {
-        background: #666;
-        border-color: #777;
-        color: #eee;
-    }
-
-    [data-color-theme*="a"] .expand-btn.expanded {
-        background: #2d4a66;
-        border-color: #9cbedf;
-        color: #9cbedf;
+    [data-color-theme*="a"] .entry-pronunciation {
+        background: #555;
+        border-color: #666;
+        color: #ddd;
     }
 
     [data-color-theme*="a"] .entry-details {
@@ -1996,22 +2082,23 @@ body {
         color: #ddd;
     }
 
-    [data-color-theme*="d"] .expand-btn {
+    [data-color-theme*="d"] .clickable-entry:hover {
+        background-color: #4a4a4a !important;
+    }
+
+    [data-color-theme*="d"] .clickable-entry.expanded {
+        background-color: #2d4a66;
+    }
+
+    [data-color-theme*="d"] .entry-grammar {
         background: #555;
-        border-color: #666;
         color: #bbb;
     }
 
-    [data-color-theme*="d"] .expand-btn:hover {
-        background: #666;
-        border-color: #777;
-        color: #eee;
-    }
-
-    [data-color-theme*="d"] .expand-btn.expanded {
-        background: #2d4a66;
-        border-color: #9cbedf;
-        color: #9cbedf;
+    [data-color-theme*="d"] .entry-pronunciation {
+        background: #555;
+        border-color: #666;
+        color: #ddd;
     }
 
     [data-color-theme*="d"] .entry-details {
@@ -2258,5 +2345,155 @@ body {
 
     [data-color-theme*="d"] .keyboard-button:hover {
         background: #4a4a4a;
+    }
+}
+
+/* Footer Styles */
+.page-footer {
+    margin-top: 40px;
+    padding: 30px 0;
+    background: #f8f8f8;
+    border-top: 1px solid #eee;
+}
+
+.footer-content {
+    text-align: center;
+    color: #666;
+}
+
+.footer-content p {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.footer-content a {
+    color: #4a80b5;
+    text-decoration: none;
+}
+
+.footer-content a:hover {
+    text-decoration: underline;
+}
+
+.footer-content .acknowledgment {
+    font-style: italic;
+    color: #777;
+    margin-top: 15px;
+}
+
+/* Dark mode footer */
+@media (prefers-color-scheme: dark) {
+    [data-color-theme*="a"] .page-footer {
+        background: #333;
+        border-top-color: #555;
+    }
+
+    [data-color-theme*="a"] .footer-content {
+        color: #bbb;
+    }
+
+    [data-color-theme*="a"] .footer-content a {
+        color: #9cbedf;
+    }
+
+    [data-color-theme*="a"] .footer-content .acknowledgment {
+        color: #aaa;
+    }
+
+    [data-color-theme*="a"] .nav-link {
+        color: #9cbedf;
+    }
+
+    [data-color-theme*="a"] .nav-link:hover {
+        background: #444;
+        color: #eee;
+    }
+
+    [data-color-theme*="a"] .nav-link.active {
+        background: #9cbedf;
+        color: #333;
+    }
+
+    [data-color-theme*="a"] .orthography-switcher {
+        background: #333;
+        border-bottom-color: #555;
+    }
+
+    [data-color-theme*="a"] .ortho-controls label {
+        color: #bbb;
+    }
+
+    [data-color-theme*="a"] .ortho-controls select {
+        background: #444;
+        border-color: #666;
+        color: #eee;
+    }
+
+    [data-color-theme*="a"] .coming-soon {
+        background: #444;
+        border-color: #666;
+        color: #eee;
+    }
+
+    [data-color-theme*="a"] .acknowledgement-section h3 {
+        color: #9cbedf;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    [data-color-theme*="d"] .page-footer {
+        background: #333;
+        border-top-color: #555;
+    }
+
+    [data-color-theme*="d"] .footer-content {
+        color: #bbb;
+    }
+
+    [data-color-theme*="d"] .footer-content a {
+        color: #9cbedf;
+    }
+
+    [data-color-theme*="d"] .footer-content .acknowledgment {
+        color: #aaa;
+    }
+
+    [data-color-theme*="d"] .nav-link {
+        color: #9cbedf;
+    }
+
+    [data-color-theme*="d"] .nav-link:hover {
+        background: #444;
+        color: #eee;
+    }
+
+    [data-color-theme*="d"] .nav-link.active {
+        background: #9cbedf;
+        color: #333;
+    }
+
+    [data-color-theme*="d"] .orthography-switcher {
+        background: #333;
+        border-bottom-color: #555;
+    }
+
+    [data-color-theme*="d"] .ortho-controls label {
+        color: #bbb;
+    }
+
+    [data-color-theme*="d"] .ortho-controls select {
+        background: #444;
+        border-color: #666;
+        color: #eee;
+    }
+
+    [data-color-theme*="d"] .coming-soon {
+        background: #444;
+        border-color: #666;
+        color: #eee;
+    }
+
+    [data-color-theme*="d"] .acknowledgement-section h3 {
+        color: #9cbedf;
     }
 }

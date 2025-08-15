@@ -24,7 +24,32 @@
                 <img src="assets/logo.png"></img>
             </h1>
         </div>
+        <div class="small-8 columns">
+            <nav class="main-nav">
+                <ul class="nav-menu">
+                    <li><a href="#" class="nav-link active" data-page="dictionary">Dictionary</a></li>
+                    <li><a href="#" class="nav-link" data-page="corpus">Corpus</a></li>
+                    <li><a href="#" class="nav-link" data-page="conjugator">Conjugator</a></li>
+                    <li><a href="#" class="nav-link" data-page="lessons">Lessons</a></li>
+                    <li><a href="#" class="nav-link" data-page="resources">Resources</a></li>
+                    <li><a href="#" class="nav-link" data-page="acknowledgements">Acknowledgements</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
+
+    <div class="orthography-switcher row">
+        <div class="large-12 columns">
+            <div class="ortho-controls">
+                <label for="orthography-select">Orthography:</label>
+                <select id="orthography-select">
+                    <option value="lachler" selected>Lachler</option>
+                    <option value="classic">Classic</option>
+                    <option value="enrico">Enrico</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
     <div class="row collapse">
         <div class="large-12 columns">
@@ -128,26 +153,114 @@
     <div id="page_container" class="row">
         <div class="large-12 columns">
 
-            <div class="page" id="what_is_this">
-                <article>
-                    <div class="row">
-                        <div class="small-12 medium-10 columns small-centered">
-                            <p>
-                                Kílgyaa is an interactive dictionary of X̱aad Kíl (the Haida language). It is a work in
-                                progress.
-                            </p>
-                            <p>
-                                Enter a word in plain or inflected form to see its entry.
-                            </p>
-                            <p>
-                                Spelling conventions: You can enter text with or without accents and special characters
-                                (e.g. <i>hlg̱ánggula</i> and <i>hlganggula</i> will perform the same search).
-                                Kílgyaa currently uses the orthography of Lachler's dictionary of Alaskan Haida.
-                            </p>
+            <!-- Dictionary Page -->
+            <div class="page-content" id="dictionary-page">
+                <div class="page" id="what_is_this">
+                    <article>
+                        <div class="row">
+                            <div class="small-12 medium-10 columns small-centered">
+                                <p>
+                                    Kílgyaa is an interactive dictionary of X̱aad Kíl (the Haida language). It is a work in
+                                    progress.
+                                </p>
+                                <p>
+                                    Enter a word in plain or inflected form to see its entry.
+                                </p>
+                                <p>
+                                    Spelling conventions: You can enter text with or without accents and special characters
+                                    (e.g. <i>hlg̱ánggula</i> and <i>hlganggula</i> will perform the same search).
+                                    Kílgyaa currently uses the orthography of Lachler's dictionary of Alaskan Haida.
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    </article>
+                </div>
+            </div>
 
-                </article>
+            <!-- Corpus Search Page -->
+            <div class="page-content" id="corpus-page" style="display: none;">
+                <div class="page">
+                    <article>
+                        <div class="row">
+                            <div class="small-12 medium-10 columns small-centered">
+                                <h2>Corpus Search</h2>
+                                <p>Search through a collection of Haida texts and recordings to find words and phrases in context.</p>
+                                <div class="coming-soon">
+                                    <p><em>This feature is coming soon.</em></p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Verb Conjugator Page -->
+            <div class="page-content" id="conjugator-page" style="display: none;">
+                <div class="page">
+                    <article>
+                        <div class="row">
+                            <div class="small-12 medium-10 columns small-centered">
+                                <h2>Verb Conjugator</h2>
+                                <p>Explore verb conjugations in Haida.</p>
+                                <div class="coming-soon">
+                                    <p><em>This feature is coming soon.</em></p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Lessons Page -->
+            <div class="page-content" id="lessons-page" style="display: none;">
+                <div class="page">
+                    <article>
+                        <div class="row">
+                            <div class="small-12 medium-10 columns small-centered">
+                                <h2>Language Lessons</h2>
+                                <p>Learn Haida through structured lessons and exercises.</p>
+                                <div class="coming-soon">
+                                    <p><em>This feature is coming soon.</em></p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Resources Page -->
+            <div class="page-content" id="resources-page" style="display: none;">
+                <div class="page">
+                    <article>
+                        <div class="row">
+                            <div class="small-12 medium-10 columns small-centered">
+                                <h2>External Resources</h2>
+                                <p>Links to other Haida language materials and resources.</p>
+                                <ul class="resource-links">
+                                    <li><a href="https://www.firstvoices.com/xaad-kil-massett" target="_blank">FirstVoices Haida (Massett)</a></li>
+                                    <li><a href="https://www.firstvoices.com/hlgaagilda-xaayda-kil" target="_blank">FirstVoices Haida (Skidegate)</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Acknowledgements Page -->
+            <div class="page-content" id="acknowledgements-page" style="display: none;">
+                <div class="page">
+                    <article>
+                        <div class="row">
+                            <div class="small-12 medium-10 columns small-centered">
+                                <h2>Acknowledgements</h2>
+                                <p>This dictionary project builds upon the work of many speakers, community members, and linguists.</p>
+
+                                <h3>Written Sources</h3>
+                                <p>Entries are sourced from: (TBD)</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
             </div>
 
         </div>
@@ -156,6 +269,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="src/dictionary-data.js"></script>
     <script src="src/ipa-converter.js"></script>
+    <script src="src/orthography-converter.js"></script>
     <script>
 
         function createResultsContainer() {
@@ -164,7 +278,7 @@
                     <div id="search-results" class="search-results" style="display: none;">
                         <div class="results-container">
                             <div class="results-header">
-                                <h3>Dictionary Entries</h3>
+                                <h3>Dictionary Entries (click to expand)</h3>
                             </div>
                             <div class="results-list"></div>
                         </div>
@@ -219,23 +333,29 @@
                     grammarHtml = `<div class="detail-section"><h6>Grammar</h6><div class="grammar">${entry.grammar}</div></div>`;
                 }
                 
+                // Get classifier or inflection class for compact display
+                let compactGrammar = '';
+                if (entry.type === 'noun' && entry.classifier) {
+                    compactGrammar = `classifier: ${entry.classifier}`;
+                } else if (entry.type === 'verb' && entry.inflectionClass) {
+                    compactGrammar = entry.inflectionClass;
+                }
+                
                 const entryHtml = `
-                    <div class="entry-item" data-entry-id="${index}">
+                    <div class="entry-item clickable-entry" data-entry-id="${index}">
                         <div class="entry-header">
-                            <div class="entry-basic">
-                                <div class="entry-word">
-                                    <strong>${entry.word}</strong>
-                                    <span class="entry-type">(${entry.type})</span>
+                            <div class="entry-main">
+                                <div class="entry-left">
+                                    <div class="entry-word">
+                                        <strong>${entry.word}</strong>
+                                        <span class="entry-type">(${entry.type})</span>
+                                        ${compactGrammar ? `<span class="entry-grammar">${compactGrammar}</span>` : ''}
+                                    </div>
+                                    <div class="entry-definition">${entry.definition}</div>
                                 </div>
-                                <div class="entry-pronunciation">[${pronunciation}]</div>
-                                <div class="entry-definition">${entry.definition}</div>
-                            </div>
-                            <div class="entry-actions">
-                                <button class="expand-btn" data-target="details-${index}">
-                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4">
-                                        <polyline points="5,8 12,15 19,8"></polyline>
-                                    </svg>
-                                </button>
+                                <div class="entry-right">
+                                    <div class="entry-pronunciation">[${pronunciation}]</div>
+                                </div>
                             </div>
                         </div>
                         <div class="entry-details" id="details-${index}" style="display: none;">
@@ -363,24 +483,77 @@
                 }
             });
 
-            // Expand/collapse entry details
-            $(document).on('click', '.expand-btn', function (e) {
+            // Expand/collapse entry details by clicking anywhere on entry
+            $(document).on('click', '.clickable-entry', function (e) {
                 e.preventDefault();
-                const targetId = $(this).data('target');
-                const detailsSection = $('#' + targetId);
-                const button = $(this);
-                const svg = button.find('svg polyline');
+                const entryId = $(this).data('entry-id');
+                const detailsSection = $('#details-' + entryId);
+                const entry = $(this);
                 
                 if (detailsSection.is(':visible')) {
                     // Collapse
                     detailsSection.slideUp(200);
-                    svg.attr('points', '5,8 12,15 19,8'); // Down arrow
-                    button.removeClass('expanded');
+                    entry.removeClass('expanded');
                 } else {
                     // Expand
                     detailsSection.slideDown(200);
-                    svg.attr('points', '19,16 12,9 5,16'); // Up arrow
-                    button.addClass('expanded');
+                    entry.addClass('expanded');
+                }
+            });
+
+            // Page navigation
+            $('.nav-link').click(function(e) {
+                e.preventDefault();
+                const targetPage = $(this).data('page');
+                
+                // Update active nav
+                $('.nav-link').removeClass('active');
+                $(this).addClass('active');
+                
+                // Show/hide pages
+                $('.page-content').hide();
+                $('#' + targetPage + '-page').show();
+                
+                // Hide search form and results for non-dictionary pages
+                if (targetPage === 'dictionary') {
+                    $('.search').show();
+                    $('.orthography-switcher').show();
+                } else {
+                    $('.search').hide();
+                    $('.orthography-switcher').hide();
+                    $('#search-results').hide();
+                    $('#what_is_this').show();
+                }
+            });
+
+            // Orthography switching
+            let currentOrthography = 'lachler';
+            
+            $('#orthography-select').change(function() {
+                const newOrthography = $(this).val();
+                
+                if (newOrthography !== currentOrthography) {
+                    // Convert search input
+                    const currentInput = $('.search .keyword').val();
+                    if (currentInput) {
+                        const convertedInput = convertOrthography(currentInput, currentOrthography, newOrthography);
+                        $('.search .keyword').val(convertedInput);
+                    }
+                    
+                    // Re-run search with converted query if results are visible
+                    if ($('#search-results').is(':visible')) {
+                        const query = $('.search .keyword').val().trim();
+                        if (query.length > 0) {
+                            const convertedEntries = convertDictionaryEntries(placeholderEntries, newOrthography);
+                            const filteredEntries = convertedEntries.filter(entry => 
+                                normalizeText(entry.word).includes(normalizeText(query)) ||
+                                normalizeText(entry.definition).includes(normalizeText(query))
+                            ).slice(0, 8);
+                            displayResults(filteredEntries);
+                        }
+                    }
+                    
+                    currentOrthography = newOrthography;
                 }
             });
         })

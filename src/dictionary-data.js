@@ -5,7 +5,8 @@ const placeholderEntries = [
         word: "íijang",
         definition: "to be",
         type: "verb",
-        grammar: "intransitive verb (-s)",
+        grammar: "intransitive verb",
+        inflectionClass: "-s",
         examples: [
             {
                 sentence: "Hláa uu íijang.",
@@ -27,7 +28,7 @@ const placeholderEntries = [
         examples: [
             {
                 sentence: "G̱ándlaay k'íinaang.",
-                translation: "The water is hot.."
+                translation: "The water is hot."
             }
         ],
         inflections: ["g̱ándlaay (the water)"],
@@ -37,7 +38,8 @@ const placeholderEntries = [
         word: "hlg̱ánggula",
         definition: "to work",
         type: "verb",
-        grammar: "intransitive verb (weak-a)",
+        grammar: "intransitive verb",
+        inflectionClass: "weak-a",
         examples: [
             {
                 sentence: "Dáng hlg̱ánggulaang.",
@@ -51,7 +53,8 @@ const placeholderEntries = [
         word: "na",
         definition: "house",
         type: "noun",
-        grammar: "common noun (classifier: tíi)",
+        grammar: "common noun",
+        classifier: "tíi",
         examples: [
             {
                 sentence: "Náay uu í'waangang.",
@@ -66,10 +69,11 @@ const placeholderEntries = [
         definition: "fish, salmon",
         type: "noun",
         grammar: "common noun",
+        classifier: "sáa",
         examples: [
             {
                 sentence: "Chíin uu táaw 'láa íijang.",
-                translation: "Fish is a good food.."
+                translation: "Fish is a good food."
             }
         ],
         inflections: ["chíinaay (the fish)"],
@@ -79,7 +83,7 @@ const placeholderEntries = [
         word: "X̱aad Kíl",
         definition: "Haida language",
         type: "noun",
-        grammar: "compund noun",
+        grammar: "compound noun",
         examples: [
             {
                 sentence: "Dámaan X̱aad Kíl hal gúusuugang.",
@@ -94,8 +98,8 @@ const placeholderEntries = [
         definition: "fox",
         type: "noun",
         grammar: "common noun",
-        examples: [
-        ],
+        classifier: "sáa",
+        examples: [],
         inflections: [],
         notes: ""
     }
