@@ -67,6 +67,13 @@
 
                             </a>
 
+                            <a class="keyboard-button_js keyboard-button icon" tabindex="4">
+                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="#252528" stroke-width="2"/>
+                                    <path d="M7 9H7.01M10 9H10.01M13 9H13.01M16 9H16.01M8.5 12H8.51M11.5 12H11.51M14.5 12H14.51M7 15H17" stroke="#252528" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </a>
+
                             <div class="text_input">
                                 <div class="hidden range"></div>
                                 <input type="text" class="keyword" name="keyword" id="keyword" value="" tabindex="1"
@@ -79,6 +86,43 @@
                 </div>
 
             </form>
+            
+            <!-- Special Character Input Panel -->
+            <div id="character-panel" class="character-panel" style="display: none;">
+                <div class="character-panel-content">
+                    <div class="character-panel-header">
+                        <h4>Special Characters</h4>
+                        <button class="character-panel-close">&times;</button>
+                    </div>
+                    <div class="character-groups">
+                        <div class="character-group">
+                            <h5>Vowels with acute accent</h5>
+                            <div class="character-buttons">
+                                <button class="char-btn" data-char="á">á</button>
+                                <button class="char-btn" data-char="é">é</button>
+                                <button class="char-btn" data-char="í">í</button>
+                                <button class="char-btn" data-char="ó">ó</button>
+                                <button class="char-btn" data-char="ú">ú</button>
+                            </div>
+                        </div>
+                        <div class="character-group">
+                            <h5>Underlined consonants</h5>
+                            <div class="character-buttons">
+                                <button class="char-btn" data-char="ḵ">ḵ</button>
+                                <button class="char-btn" data-char="g̱">g̱</button>
+                                <button class="char-btn" data-char="x̱">x̱</button>
+                            </div>
+                        </div>
+                        <div class="character-group">
+                            <h5>Circumflex consonants</h5>
+                            <div class="character-buttons">
+                                <button class="char-btn" data-char="ĝ">ĝ</button>
+                                <button class="char-btn" data-char="x̂">x̂</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div id="page_container" class="row">
@@ -110,34 +154,9 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script src="src/dictionary-data.js"></script>
+    <script src="src/ipa-converter.js"></script>
     <script>
-        // Placeholder dictionary entries
-        const placeholderEntries = [
-            {
-                word: "íijang",
-                definition: "to be",
-                type: "verb",
-                pronunciation: "EE-jahng"
-            },
-            {
-                word: "g̱ándl",
-                definition: "water",
-                type: "noun",
-                pronunciation: "HAHNDL"
-            },
-            {
-                word: "hlg̱ánggula",
-                definition: "to work",
-                type: "verb",
-                pronunciation: "hlh-GAHNG-goo-lah"
-            },
-            {
-                word: "na",
-                definition: "house",
-                type: "noun",
-                pronunciation: "NAH"
-            }
-        ];
 
         function createResultsContainer() {
             if ($('#search-results').length === 0) {
@@ -160,13 +179,16 @@
             resultsList.empty();
             
             entries.forEach(entry => {
+                // Calculate IPA dynamically if not already present
+                const pronunciation = entry.pronunciation || lachlerToIPA(entry.word);
+                
                 const entryHtml = `
                     <div class="entry-item">
                         <div class="entry-word">
                             <strong>${entry.word}</strong>
                             <span class="entry-type">(${entry.type})</span>
                         </div>
-                        <div class="entry-pronunciation">[${entry.pronunciation}]</div>
+                        <div class="entry-pronunciation">[${pronunciation}]</div>
                         <div class="entry-definition">${entry.definition}</div>
                     </div>
                 `;
@@ -178,20 +200,20 @@
         }
 
         function normalizeText(text) {
-            // Remove accents and special characters for matching
-            return text.toLowerCase()
-                .replace(/[áàâäã]/g, 'a')
-                .replace(/[éèêë]/g, 'e')
-                .replace(/[íìîï]/g, 'i')
-                .replace(/[óòôöõ]/g, 'o')
-                .replace(/[úùûü]/g, 'u')
-                .replace(/[ñ]/g, 'n')
-                .replace(/[ç]/g, 'c')
-                .replace(/[ł]/g, 'l')
+            // Unicode normalization (NFD) to separate combining characters
+            const normalized = text.normalize('NFD').toLowerCase();
+            
+            return normalized
+                // Remove combining diacritical marks (accents, underlines, etc.)
+                .replace(/[\u0300-\u036f]/g, '')
+                // Handle specific Haida characters
                 .replace(/[x̱]/g, 'x')
                 .replace(/[g̱]/g, 'g')
+                .replace(/[ḵ]/g, 'k')
+                // Handle apostrophes and quotes
                 .replace(/[k']/g, 'k')
                 .replace(/['']/g, '')
+                // Keep only alphanumeric characters
                 .replace(/[^a-z0-9]/g, '');
         }
 
@@ -244,6 +266,47 @@
                 $('.search .keyword').first().focus();
                 $('#search-results').hide();
                 $('#what_is_this').show();
+            });
+
+            // Keyboard panel functionality
+            $('.keyboard-button_js').click(function (e) {
+                e.preventDefault();
+                $('#character-panel').toggle();
+            });
+
+            // Character panel close button
+            $('.character-panel-close').click(function (e) {
+                e.preventDefault();
+                $('#character-panel').hide();
+            });
+
+            // Character button clicks
+            $('.char-btn').click(function (e) {
+                e.preventDefault();
+                const char = $(this).data('char');
+                const input = $('.search .keyword');
+                const currentValue = input.val();
+                const cursorPos = input[0].selectionStart || currentValue.length;
+                
+                // Insert character at cursor position
+                const newValue = currentValue.slice(0, cursorPos) + char + currentValue.slice(cursorPos);
+                input.val(newValue);
+                
+                // Set cursor position after inserted character
+                input[0].setSelectionRange(cursorPos + char.length, cursorPos + char.length);
+                
+                // Trigger input event to update search results
+                input.trigger('input');
+                
+                // Focus back on input
+                input.focus();
+            });
+
+            // Close character panel when clicking outside
+            $(document).click(function (e) {
+                if (!$(e.target).closest('#character-panel, .keyboard-button_js').length) {
+                    $('#character-panel').hide();
+                }
             });
         })
     </script>

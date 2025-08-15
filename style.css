@@ -1819,3 +1819,218 @@ body {
         color: #ddd;
     }
 }
+
+/* Character Panel Styles */
+.character-panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    margin-top: 5px;
+}
+
+.character-panel-content {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.character-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.character-panel-header h4 {
+    margin: 0;
+    color: #333;
+    font-size: 1rem;
+}
+
+.character-panel-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.character-panel-close:hover {
+    color: #333;
+}
+
+.character-group {
+    margin-bottom: 15px;
+}
+
+.character-group:last-child {
+    margin-bottom: 0;
+}
+
+.character-group h5 {
+    margin: 0 0 8px 0;
+    color: #555;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.character-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.char-btn {
+    background: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 40px;
+    text-align: center;
+}
+
+.char-btn:hover {
+    background: #e8e8e8;
+    border-color: #bbb;
+}
+
+.char-btn:active {
+    background: #ddd;
+}
+
+.keyboard-button {
+    float: right;
+    margin: 0 5px;
+    padding: 7px 7px 2px 5px;
+    border: none;
+    background: #fff;
+    font-weight: 400;
+    color: #555;
+    cursor: pointer;
+}
+
+.keyboard-button:hover {
+    background: #f0f0f0;
+}
+
+/* Dark mode support for character panel */
+@media (prefers-color-scheme: dark) {
+    [data-color-theme*="a"] .character-panel-content {
+        background: #404040;
+        border-color: #666;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-color-theme*="a"] .character-panel-header {
+        border-bottom-color: #555;
+    }
+
+    [data-color-theme*="a"] .character-panel-header h4 {
+        color: #eee;
+    }
+
+    [data-color-theme*="a"] .character-panel-close {
+        color: #bbb;
+    }
+
+    [data-color-theme*="a"] .character-panel-close:hover {
+        color: #eee;
+    }
+
+    [data-color-theme*="a"] .character-group h5 {
+        color: #ccc;
+    }
+
+    [data-color-theme*="a"] .char-btn {
+        background: #555;
+        border-color: #666;
+        color: #eee;
+    }
+
+    [data-color-theme*="a"] .char-btn:hover {
+        background: #666;
+        border-color: #777;
+    }
+
+    [data-color-theme*="a"] .char-btn:active {
+        background: #444;
+    }
+
+    [data-color-theme*="a"] .keyboard-button {
+        background: #404040;
+        color: #ddd;
+    }
+
+    [data-color-theme*="a"] .keyboard-button:hover {
+        background: #4a4a4a;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    [data-color-theme*="d"] .character-panel-content {
+        background: #404040;
+        border-color: #666;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-color-theme*="d"] .character-panel-header {
+        border-bottom-color: #555;
+    }
+
+    [data-color-theme*="d"] .character-panel-header h4 {
+        color: #eee;
+    }
+
+    [data-color-theme*="d"] .character-panel-close {
+        color: #bbb;
+    }
+
+    [data-color-theme*="d"] .character-panel-close:hover {
+        color: #eee;
+    }
+
+    [data-color-theme*="d"] .character-group h5 {
+        color: #ccc;
+    }
+
+    [data-color-theme*="d"] .char-btn {
+        background: #555;
+        border-color: #666;
+        color: #eee;
+    }
+
+    [data-color-theme*="d"] .char-btn:hover {
+        background: #666;
+        border-color: #777;
+    }
+
+    [data-color-theme*="d"] .char-btn:active {
+        background: #444;
+    }
+
+    [data-color-theme*="d"] .keyboard-button {
+        background: #404040;
+        color: #ddd;
+    }
+
+    [data-color-theme*="d"] .keyboard-button:hover {
+        background: #4a4a4a;
+    }
+}
