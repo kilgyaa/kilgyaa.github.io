@@ -1,15 +1,152 @@
-<!DOCTYPE HTML>
-<html lang="en-US">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="refresh" content="0; url=https://morrisalp.github.io/kilgyaa/">
-        <script type="text/javascript">
-            window.location.href = "https://morrisalp.github.io/kilgyaa/"
-        </script>
-        <title>Page Redirection</title>
-    </head>
-    <body>
-        <!-- Note: don't tell people to `click` the link, just tell them that it is a link. -->
-        If you are not redirected automatically, follow this <a href='https://morrisalp.github.io/kilgyaa/'>link</a>.
-    </body>
+<!DOCTYPE html>
+<html data-color-theme="auto">
+
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="apple-mobile-web-app-title" content="Kílgyaa">
+    <meta name="theme-color" content="#0270BF">
+
+    <link rel="stylesheet" media="screen" href="style.css" />
+
+    <link rel="icon" type="image/png" href="assets/favicon.png" />
+
+    <title>Kílgyaa: an interactive dictionary of X̱aad Kíl (the Haida language)</title>
+    <meta name="Description" content="Kílgyaa: an interactive dictionary of X̱aad Kíl (the Haida language)">
+</head>
+
+<body>
+
+    <header class="row collapse">
+        <div class="small-4 columns">
+            <h1 class="logo">
+                <img src="assets/logo.png"></img>
+            </h1>
+        </div>
+    </header>
+
+    <div class="row collapse">
+        <div class="large-12 columns">
+            <form class="search" data-live="false" id="search" action="/search" accept-charset="UTF-8" method="get">
+                <input name="utf8" type="hidden" value="&#x2713;" />
+                <div class="overlay">
+                    <div id="search_main" class="main">
+                        <div class="inner">
+                            <!-- <div id="advanced_button" class="search_type">
+                                <span class="text" id="search_dropdown_text">All</span>
+                                <span class="carat">▾</span> -->
+                            <!-- </div> -->
+                            <button type="submit" class="submit icon" tabindex="2">
+                                <svg width="20px" height="20px" viewBox="0 0 30 30" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                                        stroke="#000000" stroke-width="3" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+
+                            </button>
+                            <a class="search-form_clear-button_js search-form_clear-button icon" accesskey="1"
+                                tabindex="3">
+                                <svg width="20px" height="20px" viewBox="0 0 30 30" version="1.1"
+                                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                    <g id="icons" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <g id="ui" transform="translate(-869.000000, -159.000000)" fill="#252528"
+                                            fill-rule="nonzero">
+                                            <g id="square-filled" transform="translate(50.000000, 120.000000)">
+                                                <path
+                                                    d="M820.716328,39.2890737 L830,48.573 L839.283672,39.2890737 C839.644156,38.9285898 840.211387,38.9008602 840.603678,39.2058851 L840.710926,39.3021143 C841.101451,39.6926386 841.101451,40.3258036 840.710926,40.7163279 L831.427,50 L840.710926,59.2836721 C841.07141,59.6441561 841.09914,60.2113872 840.794115,60.6036784 L840.697886,60.7109263 C840.307361,61.1014506 839.674196,61.1014506 839.283672,60.7109263 L830,51.427 L820.716328,60.7109263 C820.355844,61.0714102 819.788613,61.0991398 819.396322,60.7941149 L819.289074,60.6978857 C818.898549,60.3073614 818.898549,59.6741964 819.289074,59.2836721 L828.573,50 L819.289074,40.7163279 C818.92859,40.3558439 818.90086,39.7886128 819.205885,39.3963216 L819.302114,39.2890737 C819.692639,38.8985494 820.325804,38.8985494 820.716328,39.2890737 Z M819.996181,40.0092211 L829.987233,50 L819.996181,59.9907789 L820.009221,60.0038195 L830,50.0127671 L839.990779,60.0038195 L840.003819,59.9907789 L830.012767,50 L840.003819,40.0092211 L839.990779,39.9961805 L830,49.9872329 L820.009221,39.9961805 L819.996181,40.0092211 Z"
+                                                    id="cancel">
+
+                                                </path>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
+
+                            </a>
+
+                            <div class="text_input">
+                                <div class="hidden range"></div>
+                                <input type="text" class="keyword" name="keyword" id="keyword" value="" tabindex="1"
+                                    lang="ja" autocapitalize="off" autocomplete="off" autocorrect="off"
+                                    spellcheck="false" placeholder="Verb in X̱aad Kíl (e.g. íijang)"
+                                    data-autoload="false" data-effective-keyword="" />
+                            </div>
+                        </div>
+                        <div id="search_sub" class="sub">
+
+                            <div id="advanced_area" class="hidden area advanced">
+                                <div class="filters">
+                                    <ul class="button-group radius" data-filter-group="type">
+                                        <li>
+                                            <a accesskey="a" class=" filter small button" data-filter="type-all"
+                                                href="//jisho.org/search">Verb</a>
+                                        </li>
+                                        <li>
+                                            <a accesskey="w" class=" filter small button" data-filter="words"
+                                                href="//jisho.org/search">Words</a>
+                                        </li>
+                                        <li>
+                                            <a accesskey="s" class=" filter small button" data-filter="sentences"
+                                                href="//jisho.org/search">Sentences</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div id="page_container" class="row">
+        <div class="large-12 columns">
+
+            <div class="page" id="what_is_this">
+                <article>
+                    <div class="row">
+                        <div class="small-12 medium-10 columns small-centered">
+                            <p>
+                                Kílgyaa is an interactive dictionary of X̱aad Kíl (the Haida language). It is a work in
+                                progress.
+                            </p>
+                            <p>
+                                Enter a verb in plain or inflected form to see its full inflection paradigm (e.g. try
+                                entering <i>íijang</i> or <i>is</i>).
+                            </p>
+                            <p>
+                                Spelling conventions: You can enter text with or without accents and special characters
+                                (e.g. <i>hlg̱ánggula</i> and <i>hlganggula</i> will perform the same search).
+                                Kílgyaa currently uses the orthography of Lachler's dictionary of Alaskan Haida.
+                            </p>
+                        </div>
+                    </div>
+
+                </article>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.search .keyword').first().focus(); // load page with search bar selected
+            // Clear button functionality:
+            $('.search-form_clear-button_js').click(function (e) {
+                e.preventDefault();
+                $('.search .keyword').val("");
+                $('.search .keyword').first().focus();
+            });
+        })
+    </script>
+
+
+</body>
+
 </html>
