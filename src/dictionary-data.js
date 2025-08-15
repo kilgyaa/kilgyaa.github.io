@@ -78,7 +78,7 @@ const placeholderEntries = [
         definition: "fish, salmon",
         type: "noun",
         grammar: "common noun",
-        classifier: "sáa",
+        classifier: "",
         examples: [
             {
                 lachler: "Chíin uu táaw 'láa íijang.",
@@ -114,7 +114,7 @@ const placeholderEntries = [
         definition: "fox",
         type: "noun",
         grammar: "common noun",
-        classifier: "sáa",
+        classifier: "",
         examples: [],
         inflections: {
             lachler: [],
