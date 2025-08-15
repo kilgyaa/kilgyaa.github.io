@@ -420,12 +420,13 @@
                 const query = $(this).val().trim();
                 const orthography = $('#orthography-select').val();
                 
-                // Mark that user has typed something
+                // Mark that user has typed something, or clear the flag if empty
                 if (query.length > 0) {
                     $(this).data('has-typed', true);
                     const filteredEntries = filterEntries(query, orthography);
                     displayResults(filteredEntries, orthography);
                 } else {
+                    $(this).removeData('has-typed');
                     $('#search-results').hide();
                     $('#what_is_this').show();
                 }
