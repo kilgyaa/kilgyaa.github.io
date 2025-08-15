@@ -71,32 +71,9 @@
                                 <div class="hidden range"></div>
                                 <input type="text" class="keyword" name="keyword" id="keyword" value="" tabindex="1"
                                     lang="ja" autocapitalize="off" autocomplete="off" autocorrect="off"
-                                    spellcheck="false" placeholder="Verb in X̱aad Kíl (e.g. íijang)"
+                                    spellcheck="false" placeholder="Word in X̱aad Kíl (e.g. íijang)"
                                     data-autoload="false" data-effective-keyword="" />
                             </div>
-                        </div>
-                        <div id="search_sub" class="sub">
-
-                            <div id="advanced_area" class="hidden area advanced">
-                                <div class="filters">
-                                    <ul class="button-group radius" data-filter-group="type">
-                                        <li>
-                                            <a accesskey="a" class=" filter small button" data-filter="type-all"
-                                                href="//jisho.org/search">Verb</a>
-                                        </li>
-                                        <li>
-                                            <a accesskey="w" class=" filter small button" data-filter="words"
-                                                href="//jisho.org/search">Words</a>
-                                        </li>
-                                        <li>
-                                            <a accesskey="s" class=" filter small button" data-filter="sentences"
-                                                href="//jisho.org/search">Sentences</a>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                            </div>
-
                         </div>
                     </div>
                 </div>
@@ -116,8 +93,7 @@
                                 progress.
                             </p>
                             <p>
-                                Enter a verb in plain or inflected form to see its full inflection paradigm (e.g. try
-                                entering <i>íijang</i> or <i>is</i>).
+                                Enter a word in plain or inflected form to see its entry.
                             </p>
                             <p>
                                 Spelling conventions: You can enter text with or without accents and special characters
@@ -135,13 +111,135 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
     <script>
+        // Placeholder dictionary entries
+        const placeholderEntries = [
+            {
+                word: "íijang",
+                definition: "to be",
+                type: "verb",
+                pronunciation: "EE-jahng"
+            },
+            {
+                word: "g̱ándl",
+                definition: "water",
+                type: "noun",
+                pronunciation: "HAHNDL"
+            },
+            {
+                word: "hlg̱ánggula",
+                definition: "to work",
+                type: "verb",
+                pronunciation: "hlh-GAHNG-goo-lah"
+            },
+            {
+                word: "na",
+                definition: "house",
+                type: "noun",
+                pronunciation: "NAH"
+            }
+        ];
+
+        function createResultsContainer() {
+            if ($('#search-results').length === 0) {
+                const resultsHtml = `
+                    <div id="search-results" class="search-results" style="display: none;">
+                        <div class="results-container">
+                            <div class="results-header">
+                                <h3>Dictionary Entries</h3>
+                            </div>
+                            <div class="results-list"></div>
+                        </div>
+                    </div>
+                `;
+                $('#page_container').prepend(resultsHtml);
+            }
+        }
+
+        function displayResults(entries) {
+            const resultsList = $('.results-list');
+            resultsList.empty();
+            
+            entries.forEach(entry => {
+                const entryHtml = `
+                    <div class="entry-item">
+                        <div class="entry-word">
+                            <strong>${entry.word}</strong>
+                            <span class="entry-type">(${entry.type})</span>
+                        </div>
+                        <div class="entry-pronunciation">[${entry.pronunciation}]</div>
+                        <div class="entry-definition">${entry.definition}</div>
+                    </div>
+                `;
+                resultsList.append(entryHtml);
+            });
+            
+            $('#search-results').show();
+            $('#what_is_this').hide();
+        }
+
+        function normalizeText(text) {
+            // Remove accents and special characters for matching
+            return text.toLowerCase()
+                .replace(/[áàâäã]/g, 'a')
+                .replace(/[éèêë]/g, 'e')
+                .replace(/[íìîï]/g, 'i')
+                .replace(/[óòôöõ]/g, 'o')
+                .replace(/[úùûü]/g, 'u')
+                .replace(/[ñ]/g, 'n')
+                .replace(/[ç]/g, 'c')
+                .replace(/[ł]/g, 'l')
+                .replace(/[x̱]/g, 'x')
+                .replace(/[g̱]/g, 'g')
+                .replace(/[k']/g, 'k')
+                .replace(/['']/g, '')
+                .replace(/[^a-z0-9]/g, '');
+        }
+
+        function filterEntries(query) {
+            if (!query) {
+                return placeholderEntries.slice(0, 6); // Show first 6 entries by default
+            }
+            
+            const normalizedQuery = normalizeText(query);
+            return placeholderEntries.filter(entry => 
+                normalizeText(entry.word).includes(normalizedQuery) ||
+                normalizeText(entry.definition).includes(normalizedQuery)
+            ).slice(0, 8); // Show up to 8 matching entries
+        }
+
         $(document).ready(function () {
             $('.search .keyword').first().focus(); // load page with search bar selected
+            
+            // Create results container
+            createResultsContainer();
+            
+            // Auto-display functionality
+            $('.search .keyword').on('input', function() {
+                const query = $(this).val().trim();
+                
+                if (query.length > 0) {
+                    const filteredEntries = filterEntries(query);
+                    displayResults(filteredEntries);
+                } else {
+                    $('#search-results').hide();
+                    $('#what_is_this').show();
+                }
+            });
+            
+            // Show initial entries when focusing on empty input
+            $('.search .keyword').on('focus', function() {
+                if ($(this).val().trim() === '') {
+                    displayResults(filterEntries(''));
+                }
+            });
+            
             // Clear button functionality:
             $('.search-form_clear-button_js').click(function (e) {
                 e.preventDefault();
                 $('.search .keyword').val("");
                 $('.search .keyword').first().focus();
+                $('#search-results').hide();
+                $('#what_is_this').show();
             });
         })
     </script>
