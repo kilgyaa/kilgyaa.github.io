@@ -13,8 +13,8 @@ const placeholderEntries = [
                 translation: "It's me."
             },
             {
-                lachler: "Hal íijang uu?",
-                translation: "Where are you?"
+                lachler: "Gam chíin is'ánggang.",
+                translation: "It's not a fish."
             }
         ],
         inflections: {
