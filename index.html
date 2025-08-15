@@ -217,7 +217,9 @@
             $('.search .keyword').on('input', function() {
                 const query = $(this).val().trim();
                 
+                // Mark that user has typed something
                 if (query.length > 0) {
+                    $(this).data('has-typed', true);
                     const filteredEntries = filterEntries(query);
                     displayResults(filteredEntries);
                 } else {
@@ -226,9 +228,11 @@
                 }
             });
             
-            // Show initial entries when focusing on empty input
+            // Show initial entries when focusing on empty input (but not on page load)
             $('.search .keyword').on('focus', function() {
-                if ($(this).val().trim() === '') {
+                // Only show entries if user has previously typed something
+                // This prevents showing entries immediately on page load
+                if ($(this).val().trim() === '' && $(this).data('has-typed')) {
                     displayResults(filterEntries(''));
                 }
             });
@@ -236,7 +240,7 @@
             // Clear button functionality:
             $('.search-form_clear-button_js').click(function (e) {
                 e.preventDefault();
-                $('.search .keyword').val("");
+                $('.search .keyword').val("").removeData('has-typed');
                 $('.search .keyword').first().focus();
                 $('#search-results').hide();
                 $('#what_is_this').show();
