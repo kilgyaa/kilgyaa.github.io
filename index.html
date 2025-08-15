@@ -153,7 +153,7 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="src/dictionary-data.js"></script>
     <script src="src/ipa-converter.js"></script>
     <script>
@@ -178,18 +178,72 @@
             const resultsList = $('.results-list');
             resultsList.empty();
             
-            entries.forEach(entry => {
+            entries.forEach((entry, index) => {
                 // Calculate IPA dynamically if not already present
                 const pronunciation = entry.pronunciation || lachlerToIPA(entry.word);
                 
+                // Build examples HTML
+                let examplesHtml = '';
+                if (entry.examples && entry.examples.length > 0) {
+                    examplesHtml = '<div class="detail-section"><h6>Examples</h6><div class="examples">';
+                    entry.examples.forEach(example => {
+                        examplesHtml += `
+                            <div class="example-item">
+                                <div class="example-sentence">${example.sentence}</div>
+                                <div class="example-translation">"${example.translation}"</div>
+                            </div>
+                        `;
+                    });
+                    examplesHtml += '</div></div>';
+                }
+                
+                // Build inflections HTML
+                let inflectionsHtml = '';
+                if (entry.inflections && entry.inflections.length > 0) {
+                    inflectionsHtml = '<div class="detail-section"><h6>Inflections</h6><div class="inflections">';
+                    entry.inflections.forEach(inflection => {
+                        inflectionsHtml += `<span class="inflection-item">${inflection}</span>`;
+                    });
+                    inflectionsHtml += '</div></div>';
+                }
+                
+                // Build notes HTML
+                let notesHtml = '';
+                if (entry.notes) {
+                    notesHtml = `<div class="detail-section"><h6>Notes</h6><div class="notes">${entry.notes}</div></div>`;
+                }
+                
+                // Build grammar HTML
+                let grammarHtml = '';
+                if (entry.grammar) {
+                    grammarHtml = `<div class="detail-section"><h6>Grammar</h6><div class="grammar">${entry.grammar}</div></div>`;
+                }
+                
                 const entryHtml = `
-                    <div class="entry-item">
-                        <div class="entry-word">
-                            <strong>${entry.word}</strong>
-                            <span class="entry-type">(${entry.type})</span>
+                    <div class="entry-item" data-entry-id="${index}">
+                        <div class="entry-header">
+                            <div class="entry-basic">
+                                <div class="entry-word">
+                                    <strong>${entry.word}</strong>
+                                    <span class="entry-type">(${entry.type})</span>
+                                </div>
+                                <div class="entry-pronunciation">[${pronunciation}]</div>
+                                <div class="entry-definition">${entry.definition}</div>
+                            </div>
+                            <div class="entry-actions">
+                                <button class="expand-btn" data-target="details-${index}">
+                                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4">
+                                        <polyline points="5,8 12,15 19,8"></polyline>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                        <div class="entry-pronunciation">[${pronunciation}]</div>
-                        <div class="entry-definition">${entry.definition}</div>
+                        <div class="entry-details" id="details-${index}" style="display: none;">
+                            ${grammarHtml}
+                            ${examplesHtml}
+                            ${inflectionsHtml}
+                            ${notesHtml}
+                        </div>
                     </div>
                 `;
                 resultsList.append(entryHtml);
@@ -306,6 +360,27 @@
             $(document).click(function (e) {
                 if (!$(e.target).closest('#character-panel, .keyboard-button_js').length) {
                     $('#character-panel').hide();
+                }
+            });
+
+            // Expand/collapse entry details
+            $(document).on('click', '.expand-btn', function (e) {
+                e.preventDefault();
+                const targetId = $(this).data('target');
+                const detailsSection = $('#' + targetId);
+                const button = $(this);
+                const svg = button.find('svg polyline');
+                
+                if (detailsSection.is(':visible')) {
+                    // Collapse
+                    detailsSection.slideUp(200);
+                    svg.attr('points', '5,8 12,15 19,8'); // Down arrow
+                    button.removeClass('expanded');
+                } else {
+                    // Expand
+                    detailsSection.slideDown(200);
+                    svg.attr('points', '19,16 12,9 5,16'); // Up arrow
+                    button.addClass('expanded');
                 }
             });
         })
