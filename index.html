@@ -589,21 +589,45 @@
                 }
             });
 
+            // Helper function to get first grapheme cluster (handles combining characters properly)
+            function getFirstGrapheme(text) {
+                if (!text) return '';
+                // Use Intl.Segmenter if available (modern browsers)
+                if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+                    const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
+                    const segments = Array.from(segmenter.segment(text));
+                    return (segments[0]?.segment || '').toUpperCase();
+                }
+                // Fallback: use regex to match first grapheme cluster
+                const match = text.match(/^[\u0000-\uFFFF][\u0300-\u036F]*|^[\uD800-\uDBFF][\uDC00-\uDFFF]/);
+                return match ? match[0].toUpperCase() : text.charAt(0).toUpperCase();
+            }
+
             // Functions for browse/letter pages
             function generateAlphabetGrid(orthography = 'lachler') {
                 const letterCounts = {};
                 
-                // Count entries by first letter
+                // Count entries by first letter (preserve accented characters)
                 placeholderEntries.forEach(entry => {
                     const word = entry[orthography] || entry.lachler;
                     if (word) {
-                        const firstLetter = word.charAt(0).toUpperCase();
+                        const firstLetter = getFirstGrapheme(word);
                         letterCounts[firstLetter] = (letterCounts[firstLetter] || 0) + 1;
                     }
                 });
                 
-                // Get sorted letters
-                const availableLetters = Object.keys(letterCounts).sort();
+                // Get sorted letters (custom sort to handle accented characters properly)
+                const availableLetters = Object.keys(letterCounts).sort((a, b) => {
+                    // Custom sorting to handle special Haida characters
+                    const aBase = a.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    const bBase = b.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    
+                    // If base letters are the same, sort by the actual character
+                    if (aBase === bBase) {
+                        return a.localeCompare(b);
+                    }
+                    return aBase.localeCompare(bBase);
+                });
                 
                 // Generate grid HTML
                 const alphabetGrid = $('#alphabet-grid');
@@ -633,7 +657,7 @@
             function displayLetterEntries(letter, orthography = 'lachler') {
                 const entries = placeholderEntries.filter(entry => {
                     const word = entry[orthography] || entry.lachler;
-                    return word && word.charAt(0).toUpperCase() === letter.toUpperCase();
+                    return word && getFirstGrapheme(word) === letter;
                 });
                 
                 // Sort entries alphabetically
