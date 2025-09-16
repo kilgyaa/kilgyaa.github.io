@@ -28,6 +28,7 @@
             <nav class="main-nav">
                 <ul class="nav-menu">
                     <li><a href="#" class="nav-link active" data-page="dictionary">Dictionary</a></li>
+                    <li><a href="#" class="nav-link" data-page="browse">Browse</a></li>
                     <li><a href="#" class="nav-link" data-page="corpus">Corpus</a></li>
                     <li><a href="#" class="nav-link" data-page="conjugator">Conjugator</a></li>
                     <li><a href="#" class="nav-link" data-page="lessons">Lessons</a></li>
@@ -166,6 +167,44 @@
                                     (e.g. <i>hlg̱ánggula</i> and <i>hlganggula</i> will perform the same search).
                                     Use the orthography switcher above to toggle between Lachler and Classic orthographies.
                                 </p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Browse Page -->
+            <div class="page-content" id="browse-page" style="display: none;">
+                <div class="page">
+                    <article>
+                        <div class="row">
+                            <div class="small-12 medium-10 columns small-centered">
+                                <h2>Browse Dictionary by Letter</h2>
+                                <p>Click on any letter below to see all words that start with that letter.</p>
+                                
+                                <div id="alphabet-grid" class="alphabet-grid">
+                                    <!-- Letters will be dynamically generated from dictionary data -->
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Letter Page Template -->
+            <div class="page-content" id="letter-page" style="display: none;">
+                <div class="page">
+                    <article>
+                        <div class="row">
+                            <div class="small-12 medium-10 columns small-centered">
+                                <div class="letter-page-header">
+                                    <h2>Words starting with <span id="current-letter">A</span></h2>
+                                    <a href="#" id="back-to-browse" class="back-link">← Back to Browse</a>
+                                </div>
+                                
+                                <div id="letter-entries" class="letter-entries">
+                                    <!-- Entries will be populated by JavaScript -->
+                                </div>
                             </div>
                         </div>
                     </article>
@@ -536,6 +575,227 @@
             // Orthography switching
             $('#orthography-select').change(function() {
                 const newOrthography = $(this).val();
+                
+                // Re-run search if results are visible
+                if ($('#search-results').is(':visible')) {
+                    const query = $('.search .keyword').val().trim();
+                    if (query.length > 0) {
+                        const filteredEntries = filterEntries(query, newOrthography);
+                        displayResults(filteredEntries, newOrthography);
+                    } else {
+                        const filteredEntries = filterEntries('', newOrthography);
+                        displayResults(filteredEntries, newOrthography);
+                    }
+                }
+            });
+
+            // Functions for browse/letter pages
+            function generateAlphabetGrid(orthography = 'lachler') {
+                const letterCounts = {};
+                
+                // Count entries by first letter
+                placeholderEntries.forEach(entry => {
+                    const word = entry[orthography] || entry.lachler;
+                    if (word) {
+                        const firstLetter = word.charAt(0).toUpperCase();
+                        letterCounts[firstLetter] = (letterCounts[firstLetter] || 0) + 1;
+                    }
+                });
+                
+                // Get sorted letters
+                const availableLetters = Object.keys(letterCounts).sort();
+                
+                // Generate grid HTML
+                const alphabetGrid = $('#alphabet-grid');
+                alphabetGrid.empty();
+                
+                let currentRow = $('<div class="alphabet-row"></div>');
+                let letterCount = 0;
+                
+                availableLetters.forEach(letter => {
+                    if (letterCount > 0 && letterCount % 10 === 0) {
+                        alphabetGrid.append(currentRow);
+                        currentRow = $('<div class="alphabet-row"></div>');
+                    }
+                    
+                    const letterLink = $(`<a href="#" class="letter-link" data-letter="${letter}">
+                        ${letter} <span class="letter-count">(${letterCounts[letter]})</span>
+                    </a>`);
+                    currentRow.append(letterLink);
+                    letterCount++;
+                });
+                
+                if (currentRow.children().length > 0) {
+                    alphabetGrid.append(currentRow);
+                }
+            }
+
+            function displayLetterEntries(letter, orthography = 'lachler') {
+                const entries = placeholderEntries.filter(entry => {
+                    const word = entry[orthography] || entry.lachler;
+                    return word && word.charAt(0).toUpperCase() === letter.toUpperCase();
+                });
+                
+                // Sort entries alphabetically
+                entries.sort((a, b) => {
+                    const wordA = a[orthography] || a.lachler;
+                    const wordB = b[orthography] || b.lachler;
+                    return wordA.localeCompare(wordB);
+                });
+                
+                const letterEntries = $('#letter-entries');
+                letterEntries.empty();
+                
+                entries.forEach((entry, index) => {
+                    const word = entry[orthography] || entry.lachler;
+                    const pronunciation = lachlerToIPA(entry.lachler);
+                    
+                    // Build examples HTML
+                    let examplesHtml = '';
+                    if (entry.examples && entry.examples.length > 0) {
+                        examplesHtml = '<div class="detail-section"><h6>Examples</h6><div class="examples">';
+                        entry.examples.forEach(example => {
+                            const exampleSentence = example[orthography] || example.lachler;
+                            examplesHtml += `
+                                <div class="example-item">
+                                    <div class="example-sentence">${exampleSentence}</div>
+                                    <div class="example-translation">"${example.translation}"</div>
+                                </div>
+                            `;
+                        });
+                        examplesHtml += '</div></div>';
+                    }
+                    
+                    // Build inflections HTML
+                    let inflectionsHtml = '';
+                    const inflections = (entry.inflections && entry.inflections[orthography]) ? 
+                        entry.inflections[orthography] : 
+                        (entry.inflections && entry.inflections.lachler) ? entry.inflections.lachler : [];
+                    if (inflections.length > 0) {
+                        inflectionsHtml = '<div class="detail-section"><h6>Inflections</h6><div class="inflections">';
+                        inflections.forEach(inflection => {
+                            inflectionsHtml += `<span class="inflection-item">${inflection}</span>`;
+                        });
+                        inflectionsHtml += '</div></div>';
+                    }
+                    
+                    // Build notes HTML
+                    let notesHtml = '';
+                    if (entry.notes) {
+                        notesHtml = `<div class="detail-section"><h6>Notes</h6><div class="notes">${entry.notes}</div></div>`;
+                    }
+                    
+                    // Build grammar HTML
+                    let grammarHtml = '';
+                    if (entry.grammar) {
+                        grammarHtml = `<div class="detail-section"><h6>Grammar</h6><div class="grammar">${entry.grammar}</div></div>`;
+                    }
+                    
+                    // Get classifier or inflection class for compact display
+                    let compactGrammar = '';
+                    if (entry.type === 'noun' && entry.classifier) {
+                        const classifier = typeof entry.classifier === 'object' ? 
+                            (entry.classifier[orthography] || entry.classifier.lachler || entry.classifier) : 
+                            entry.classifier;
+                        compactGrammar = `classifier: ${classifier}`;
+                    } else if (entry.type === 'verb' && entry.inflectionClass) {
+                        compactGrammar = entry.inflectionClass;
+                    }
+                    
+                    const entryHtml = `
+                        <div class="entry-item clickable-entry" data-entry-id="letter-${index}">
+                            <div class="entry-header">
+                                <div class="entry-main">
+                                    <div class="entry-left">
+                                        <div class="entry-word">
+                                            <strong>${word}</strong>
+                                            <span class="entry-type">(${entry.type})</span>
+                                            ${compactGrammar ? `<span class="entry-grammar">${compactGrammar}</span>` : ''}
+                                        </div>
+                                        <div class="entry-definition">${entry.definition}</div>
+                                    </div>
+                                    <div class="entry-right">
+                                        <div class="entry-pronunciation">[${pronunciation}]</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="entry-details" id="letter-details-${index}" style="display: none;">
+                                ${grammarHtml}
+                                ${examplesHtml}
+                                ${inflectionsHtml}
+                                ${notesHtml}
+                            </div>
+                        </div>
+                    `;
+                    letterEntries.append(entryHtml);
+                });
+            }
+
+            // Letter link click handler
+            $(document).on('click', '.letter-link', function(e) {
+                e.preventDefault();
+                const letter = $(this).data('letter');
+                const orthography = $('#orthography-select').val();
+                
+                // Update letter page
+                $('#current-letter').text(letter);
+                displayLetterEntries(letter, orthography);
+                
+                // Show letter page
+                $('.page-content').hide();
+                $('#letter-page').show();
+                
+                // Update nav (no active state for letter page)
+                $('.nav-link').removeClass('active');
+            });
+
+            // Back to browse button
+            $(document).on('click', '#back-to-browse', function(e) {
+                e.preventDefault();
+                $('.page-content').hide();
+                $('#browse-page').show();
+                
+                // Set browse as active
+                $('.nav-link').removeClass('active');
+                $('.nav-link[data-page="browse"]').addClass('active');
+            });
+
+            // Letter entry expand/collapse
+            $(document).on('click', '.clickable-entry', function (e) {
+                e.preventDefault();
+                const entryId = $(this).data('entry-id');
+                const detailsSection = $('#letter-details-' + entryId.replace('letter-', ''));
+                const entry = $(this);
+                
+                if (detailsSection.is(':visible')) {
+                    detailsSection.slideUp(200);
+                    entry.removeClass('expanded');
+                } else {
+                    detailsSection.slideDown(200);
+                    entry.addClass('expanded');
+                }
+            });
+
+            // Initialize alphabet grid when browse page is shown
+            $(document).on('click', '.nav-link[data-page="browse"]', function() {
+                const orthography = $('#orthography-select').val();
+                generateAlphabetGrid(orthography);
+            });
+
+            // Update alphabet when orthography changes and browse page is visible
+            $('#orthography-select').change(function() {
+                const newOrthography = $(this).val();
+                
+                // Update browse page if visible
+                if ($('#browse-page').is(':visible')) {
+                    generateAlphabetGrid(newOrthography);
+                }
+                
+                // Update letter page if visible
+                if ($('#letter-page').is(':visible')) {
+                    const currentLetter = $('#current-letter').text();
+                    displayLetterEntries(currentLetter, newOrthography);
+                }
                 
                 // Re-run search if results are visible
                 if ($('#search-results').is(':visible')) {
