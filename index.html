@@ -312,9 +312,12 @@
                     <div id="search-results" class="search-results" style="display: none;">
                         <div class="results-container">
                             <div class="results-header">
-                                <h3>Dictionary Entries (click to expand)</h3>
+                                <h3 id="results-title">Dictionary Entries (click to expand)</h3>
                             </div>
                             <div class="results-list"></div>
+                            <div class="load-more-container" style="display: none;">
+                                <button id="load-more-btn" class="load-more-btn">Load More Results</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -322,9 +325,37 @@
             }
         }
 
-        function displayResults(entries, orthography = 'lachler') {
+        function displayResults(results, orthography = 'lachler') {
             const resultsList = $('.results-list');
             resultsList.empty();
+            
+            const entries = results.entries || results; // Handle both new and old format
+            const total = results.total || entries.length;
+            const hasMore = results.hasMore || false;
+            
+            // Update the results header with hit count
+            const resultsTitle = $('#results-title');
+            if (total > 0) {
+                const showing = entries.length;
+                if (showing === total) {
+                    resultsTitle.text(`Dictionary Entries (${total} result${total !== 1 ? 's' : ''}) - click to expand`);
+                } else {
+                    resultsTitle.text(`Dictionary Entries (showing ${showing} of ${total} results) - click to expand`);
+                }
+            } else {
+                resultsTitle.text('Dictionary Entries (click to expand)');
+            }
+            
+            // Show or hide load more button
+            const loadMoreContainer = $('.load-more-container');
+            if (hasMore) {
+                loadMoreContainer.show();
+                // Store current state for load more functionality
+                $('#search-results').data('currentLimit', entries.length);
+                $('#search-results').data('totalResults', total);
+            } else {
+                loadMoreContainer.hide();
+            }
             
             entries.forEach((entry, index) => {
                 // Get the word in the current orthography
@@ -374,13 +405,27 @@
                     grammarHtml = `<div class="detail-section"><h6>Grammar</h6><div class="grammar">${entry.grammar}</div></div>`;
                 }
                 
+                // Build classifier HTML
+                let classifierHtml = '';
+                if (entry.classifier) {
+                    classifierHtml = `<div class="detail-section"><h6>Classifier</h6><div class="classifier">${entry.classifier}</div></div>`;
+                }
+                
+                // Build conjugations HTML
+                let conjugationsHtml = '';
+                if (entry.conjugations && Object.keys(entry.conjugations).length > 0) {
+                    conjugationsHtml = '<div class="detail-section"><h6>Conjugations</h6><div class="conjugations">';
+                    for (const [form, conjugation] of Object.entries(entry.conjugations)) {
+                        const displayForm = form.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        conjugationsHtml += `<div class="conjugation-item"><strong>${displayForm}:</strong> ${conjugation}</div>`;
+                    }
+                    conjugationsHtml += '</div></div>';
+                }
+                
                 // Get classifier or inflection class for compact display
                 let compactGrammar = '';
                 if (entry.type === 'noun' && entry.classifier) {
-                    const classifier = typeof entry.classifier === 'object' ? 
-                        (entry.classifier[orthography] || entry.classifier.lachler || entry.classifier) : 
-                        entry.classifier;
-                    compactGrammar = `classifier: ${classifier}`;
+                    compactGrammar = `classifier: ${entry.classifier}`;
                 } else if (entry.type === 'verb' && entry.inflectionClass) {
                     compactGrammar = entry.inflectionClass;
                 }
@@ -404,6 +449,8 @@
                         </div>
                         <div class="entry-details" id="details-${index}" style="display: none;">
                             ${grammarHtml}
+                            ${classifierHtml}
+                            ${conjugationsHtml}
                             ${examplesHtml}
                             ${inflectionsHtml}
                             ${notesHtml}
@@ -435,17 +482,51 @@
                 .replace(/[^a-z0-9]/g, '');
         }
 
-        function filterEntries(query, orthography = 'lachler') {
+        function filterEntries(query, orthography = 'lachler', limit = 8) {
             if (!query) {
-                return placeholderEntries.slice(0, 6); // Show first 6 entries by default
+                return { entries: placeholderEntries.slice(0, 6), total: placeholderEntries.length };
             }
             
             const normalizedQuery = normalizeText(query);
-            return placeholderEntries.filter(entry => {
+            const matchingEntries = placeholderEntries.filter(entry => {
                 const word = entry[orthography] || entry.lachler;
                 return normalizeText(word).includes(normalizedQuery) ||
                        normalizeText(entry.definition).includes(normalizedQuery);
-            }).slice(0, 8); // Show up to 8 matching entries
+            });
+            
+            // Sort results with proper prioritization
+            matchingEntries.sort((a, b) => {
+                const wordA = normalizeText(a[orthography] || a.lachler);
+                const wordB = normalizeText(b[orthography] || b.lachler);
+                const defA = normalizeText(a.definition);
+                const defB = normalizeText(b.definition);
+                
+                // Priority levels (lower number = higher priority)
+                const getPriority = (word, def) => {
+                    if (word.startsWith(normalizedQuery)) return 1; // Haida word starts with query
+                    if (def.startsWith(normalizedQuery)) return 2;  // English definition starts with query
+                    if (word.includes(normalizedQuery)) return 3;   // Haida word contains query
+                    if (def.includes(normalizedQuery)) return 4;    // English definition contains query
+                    return 5;
+                };
+                
+                const priorityA = getPriority(wordA, defA);
+                const priorityB = getPriority(wordB, defB);
+                
+                // First sort by priority
+                if (priorityA !== priorityB) {
+                    return priorityA - priorityB;
+                }
+                
+                // Within same priority, sort alphabetically by Haida word
+                return wordA.localeCompare(wordB);
+            });
+            
+            return { 
+                entries: matchingEntries.slice(0, limit), 
+                total: matchingEntries.length,
+                hasMore: matchingEntries.length > limit
+            };
         }
 
         $(document).ready(function () {
@@ -462,8 +543,8 @@
                 // Mark that user has typed something, or clear the flag if empty
                 if (query.length > 0) {
                     $(this).data('has-typed', true);
-                    const filteredEntries = filterEntries(query, orthography);
-                    displayResults(filteredEntries, orthography);
+                    const results = filterEntries(query, orthography);
+                    displayResults(results, orthography);
                 } else {
                     $(this).removeData('has-typed');
                     $('#search-results').hide();
@@ -477,7 +558,8 @@
                 // This prevents showing entries immediately on page load
                 if ($(this).val().trim() === '' && $(this).data('has-typed')) {
                     const orthography = $('#orthography-select').val();
-                    displayResults(filterEntries('', orthography), orthography);
+                    const results = filterEntries('', orthography);
+                    displayResults(results, orthography);
                 }
             });
             
@@ -580,11 +662,11 @@
                 if ($('#search-results').is(':visible')) {
                     const query = $('.search .keyword').val().trim();
                     if (query.length > 0) {
-                        const filteredEntries = filterEntries(query, newOrthography);
-                        displayResults(filteredEntries, newOrthography);
+                        const results = filterEntries(query, newOrthography);
+                        displayResults(results, newOrthography);
                     } else {
-                        const filteredEntries = filterEntries('', newOrthography);
-                        displayResults(filteredEntries, newOrthography);
+                        const results = filterEntries('', newOrthography);
+                        displayResults(results, newOrthography);
                     }
                 }
             });
@@ -715,6 +797,23 @@
                         grammarHtml = `<div class="detail-section"><h6>Grammar</h6><div class="grammar">${entry.grammar}</div></div>`;
                     }
                     
+                    // Build classifier HTML
+                    let classifierHtml = '';
+                    if (entry.classifier) {
+                        classifierHtml = `<div class="detail-section"><h6>Classifier</h6><div class="classifier">${entry.classifier}</div></div>`;
+                    }
+                    
+                    // Build conjugations HTML
+                    let conjugationsHtml = '';
+                    if (entry.conjugations && Object.keys(entry.conjugations).length > 0) {
+                        conjugationsHtml = '<div class="detail-section"><h6>Conjugations</h6><div class="conjugations">';
+                        for (const [form, conjugation] of Object.entries(entry.conjugations)) {
+                            const displayForm = form.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                            conjugationsHtml += `<div class="conjugation-item"><strong>${displayForm}:</strong> ${conjugation}</div>`;
+                        }
+                        conjugationsHtml += '</div></div>';
+                    }
+                    
                     // Get classifier or inflection class for compact display
                     let compactGrammar = '';
                     if (entry.type === 'noun' && entry.classifier) {
@@ -745,6 +844,8 @@
                             </div>
                             <div class="entry-details" id="letter-details-${index}" style="display: none;">
                                 ${grammarHtml}
+                                ${classifierHtml}
+                                ${conjugationsHtml}
                                 ${examplesHtml}
                                 ${inflectionsHtml}
                                 ${notesHtml}
@@ -825,13 +926,25 @@
                 if ($('#search-results').is(':visible')) {
                     const query = $('.search .keyword').val().trim();
                     if (query.length > 0) {
-                        const filteredEntries = filterEntries(query, newOrthography);
-                        displayResults(filteredEntries, newOrthography);
+                        const results = filterEntries(query, newOrthography);
+                        displayResults(results, newOrthography);
                     } else {
-                        const filteredEntries = filterEntries('', newOrthography);
-                        displayResults(filteredEntries, newOrthography);
+                        const results = filterEntries('', newOrthography);
+                        displayResults(results, newOrthography);
                     }
                 }
+            });
+            
+            // Load more button functionality
+            $(document).on('click', '#load-more-btn', function(e) {
+                e.preventDefault();
+                const currentLimit = $('#search-results').data('currentLimit') || 8;
+                const newLimit = currentLimit + 8;
+                const query = $('.search .keyword').val().trim();
+                const orthography = $('#orthography-select').val();
+                
+                const results = filterEntries(query, orthography, newLimit);
+                displayResults(results, orthography);
             });
         })
     </script>

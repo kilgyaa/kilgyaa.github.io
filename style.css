@@ -128,6 +128,57 @@ img {
     margin-bottom: 1rem;
 }
 
+/* Search results load more button */
+.load-more-container {
+    text-align: center;
+    margin: 1.5rem 0;
+}
+
+.load-more-btn {
+    background: #b71c1c;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background 0.2s ease;
+}
+
+.load-more-btn:hover {
+    background: #8b0000;
+}
+
+.load-more-btn:active {
+    transform: translateY(1px);
+}
+
+/* Classifier and conjugation styling */
+.classifier {
+    font-style: italic;
+    color: #666;
+    background: #f5f5f5;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    display: inline-block;
+}
+
+.conjugations {
+    margin-top: 0.5rem;
+}
+
+.conjugation-item {
+    margin-bottom: 0.25rem;
+    padding: 0.25rem 0;
+}
+
+.conjugation-item strong {
+    color: #b71c1c;
+    display: inline-block;
+    min-width: 120px;
+}
+
 .page,
 .row {
     margin: 0 auto;
